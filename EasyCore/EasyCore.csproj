@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>netcore 基础类库</Description>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Version>1.0.3</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Serialization\**" />
+    <Compile Remove="ServiceHosting\**" />
+    <EmbeddedResource Remove="Serialization\**" />
+    <EmbeddedResource Remove="ServiceHosting\**" />
+    <None Remove="Serialization\**" />
+    <None Remove="ServiceHosting\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\AbstractModule.cs" />
+    <Compile Remove="Models\AppModuleContext.cs" />
+    <Compile Remove="Models\Component.cs" />
+    <Compile Remove="Models\ContainerBuilderWrapper.cs" />
+    <Compile Remove="Models\CPlatformContainer.cs" />
+    <Compile Remove="Models\EnginePartModule.cs" />
+    <Compile Remove="Models\RegistrationExtensions.cs" />
+    <Compile Remove="OtherExtensions\ContainerBuilderExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Exceptionless" Version="4.3.2027" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.0" />
+    <PackageReference Include="FreeSql.Provider.SqlServer" Version="0.12.16" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="FreeSql.Repository" Version="0.12.16" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+	  <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
+    <PackageReference Include="Minio" Version="3.1.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Scrutor" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="OtherExtensions\Utilities\CheckHelp\CPlatformResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CPlatformResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="OtherExtensions\Utilities\CheckHelp\CPlatformResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CPlatformResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
