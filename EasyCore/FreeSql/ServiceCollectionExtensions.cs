@@ -19,7 +19,7 @@ namespace EasyCore.FreeSql
         {
 
             var thisFontColor = (int)Console.ForegroundColor;
-            var newFontColor = (ConsoleColor)((thisFontColor + 1) > 15 ? 0: (thisFontColor + 1));
+            var newFontColor = (ConsoleColor)((thisFontColor + 1) > 15 ? 0 : (thisFontColor + 1));
 
 
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -28,21 +28,35 @@ namespace EasyCore.FreeSql
             //注入FreeSql
             service.AddScoped(f =>
             {
-                //var log = f.GetRequiredService<ILogger<IFreeSql>>();
+                var log = f.GetRequiredService<ILogger<IFreeSql>>();
                 var freeBuilder = new FreeSqlBuilder()
                     .UseAutoSyncStructure(false)
                     .UseConnectionString(freeSql.DataType, freeSql.MasterConnetion)
                     .UseLazyLoading(true)
                     .UseMonitorCommand(aop =>
                     {
+                        //Console.ForegroundColor = newFontColor;
+                        //Console.WriteLine("=================================================================================\n");
+                        //Console.WriteLine(aop.CommandText + "\n");
 
-                        Console.ForegroundColor = newFontColor;
-                        Console.WriteLine
-                        (
-                          "\n\n====================================================================\n\n"
-                                                      + aop.CommandText +
-                          "\n\n====================================================================\n\n"
-                        );
+                        string parametersValue = "";
+                        for (int i = 0; i < aop.Parameters.Count; i++)
+                        {
+                            parametersValue += $"{aop.Parameters[i].ParameterName}:{aop.Parameters[i].Value}" + ";\n";
+                        }
+                        if (!string.IsNullOrWhiteSpace(parametersValue))
+                        {
+                            //Console.WriteLine(parametersValue);
+
+                            log.LogInformation("\n=================================================================================\n\n" + aop.CommandText + "\n\n");
+                            log.LogInformation("\n" + parametersValue + "\n=================================================================================\n\n");
+                        }
+
+                        log.LogInformation("\n=================================================================================\n\n" 
+                                                                            + aop.CommandText + 
+                                            "\n\n=================================================================================\n");
+                        //Console.WriteLine("=================================================================================\n");
+                        //Console.ForegroundColor = (ConsoleColor)thisFontColor;
                     });
                 if (freeSql.SlaveConnections?.Count > 0)//判断是否存在从库
                 {

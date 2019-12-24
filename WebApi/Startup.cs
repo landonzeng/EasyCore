@@ -38,7 +38,7 @@ namespace WebApi
             services.Configure<ExceptionlessConfig>(Configuration.GetSection("Exceptionless"));
             #endregion
 
-            services.AddLogging();
+            //services.AddLogging();
 
             services.AddMinio();
 

@@ -11,6 +11,7 @@ using WebApi.IServices;
 using WebApi.Module;
 using EasyCore.Utilities;
 using static DingTalk.Api.Response.OapiRoleSimplelistResponse;
+using FreeSql;
 
 namespace WebApi.Controllers
 {
@@ -18,13 +19,13 @@ namespace WebApi.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly IBaseUserServices _baseUserServices;
+        private readonly IRepositoryUnitOfWork _uow;
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IBaseUserServices baseUserServices)
         {
             _logger = logger;
-            _baseUserServices = baseUserServices;
+            _uow = baseUserServices.UnitOfWork;
         }
 
         [HttpGet]
@@ -34,33 +35,55 @@ namespace WebApi.Controllers
             //var data = await _baseUserServices.UnitOfWork.GetRepository<LR_Base_Company>().Select.ToListAsync();
             //return Ok(data);
 
+            LR_Test model = new LR_Test();
+
+
+            //model.CompanyId = Guid.NewGuid();
+            //model.F_EnCode = "111";
+            //model.F_TestId = "111";
+
+
+            //await _uow.GetGuidRepository<LR_Test>().InsertAsync(model);
+            
+            model = await _uow.GetGuidRepository<LR_Test>().Where(it => it.Id == 1).FirstAsync();
+            string F_EnCode = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");            
+            
+            var sql = await _uow.GetRepository<LR_Test>().UpdateDiy.SetRaw("F_Encode=@F_Encode,F_TestId=@F_TestId", new { F_Encode = F_EnCode, F_TestId = "2313123123" }).Where(it => it.Id == 1).ExecuteUpdatedAsync();
+
+
+            //var insert = _uow.GetRepository<LR_Test>().UpdateDiy.SetSource(model).Where(it=>it.F_EnCode=="111");
+
+            _uow.Commit();
+
+
+
 
             #region 获取公司所有角色
-            var db_userList = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).ToListAsync();
-            var db_role = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).GroupBy(it => it.PositionName).ToListAsync(a => a.Key);
+            //var db_userList = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).ToListAsync();
+            //var db_role = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).GroupBy(it => it.PositionName).ToListAsync(a => a.Key);
             #endregion
 
 
             #region 获取钉钉Token
-            IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/gettoken");
-            OapiGettokenRequest request = new OapiGettokenRequest();
-            request.Appkey = "dingzaylvubm9xhoeijk";
-            request.Appsecret = "eJaM-HBxG74ABJhnIYPNMVXNLZQqHSxkgKshtcHFO1pBybjpmbTZwqitgDnPtncu";
-            request.SetHttpMethod("GET");
-            OapiGettokenResponse response = client.Execute(request);
+            //IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/gettoken");
+            //OapiGettokenRequest request = new OapiGettokenRequest();
+            //request.Appkey = "dingzaylvubm9xhoeijk";
+            //request.Appsecret = "eJaM-HBxG74ABJhnIYPNMVXNLZQqHSxkgKshtcHFO1pBybjpmbTZwqitgDnPtncu";
+            //request.SetHttpMethod("GET");
+            //OapiGettokenResponse response = client.Execute(request);
             #endregion
 
             #region 获取角色列表
-            client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/list");
-            var requestRole = new OapiRoleListRequest();
-            requestRole.Offset = 0L;
-            requestRole.Size = 200L;
+            //client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/list");
+            //var requestRole = new OapiRoleListRequest();
+            //requestRole.Offset = 0L;
+            //requestRole.Size = 200L;
 
-            OapiRoleListResponse responseRoleList = client.Execute(requestRole, response.AccessToken);
+            //OapiRoleListResponse responseRoleList = client.Execute(requestRole, response.AccessToken);
             #endregion
 
-            List<OapiRoleAddroleResponse> result = new List<OapiRoleAddroleResponse>();
-            var dd_roleList = responseRoleList.Result.List.Where(it => it.Name == "职位").FirstOrDefault();
+            //List<OapiRoleAddroleResponse> result = new List<OapiRoleAddroleResponse>();
+            //var dd_roleList = responseRoleList.Result.List.Where(it => it.Name == "职位").FirstOrDefault();
 
             #region 获取职位角色下所有角色列表，然后删除其中的所有员工
             //foreach (var item in dd_roleList.Roles)
@@ -115,111 +138,111 @@ namespace WebApi.Controllers
             #endregion
 
 
-            var dd_roles = dd_roleList.Roles?.Select(it => it.Name).ToList();
-            var strlist = dd_roles;
-            if (dd_roles != null)
-            {
-                strlist = db_role.Except(dd_roles).ToList();
-            }
+            //var dd_roles = dd_roleList.Roles?.Select(it => it.Name).ToList();
+            //var strlist = dd_roles;
+            //if (dd_roles != null)
+            //{
+            //    strlist = db_role.Except(dd_roles).ToList();
+            //}
 
             #region 获取角色下的所有用户
-            client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/simplelist");
-            List<EmpSimpleDomain> simpleDomainsList = new List<EmpSimpleDomain>();
-            if (dd_roleList.Roles != null)
-            {
-                foreach (var item in dd_roleList.Roles)
-                {
-                    GetSimplelistResponse(simpleDomainsList, client, response, item);
-                }
-            }
+            //client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/simplelist");
+            //List<EmpSimpleDomain> simpleDomainsList = new List<EmpSimpleDomain>();
+            //if (dd_roleList.Roles != null)
+            //{
+            //    foreach (var item in dd_roleList.Roles)
+            //    {
+            //        GetSimplelistResponse(simpleDomainsList, client, response, item);
+            //    }
+            //}
             #endregion
 
             #region 过滤掉加入到钉钉的用户
             // 不包含
-            //var query4 = list2s.Where(s => list1.All(t => !s.name.Contains(t))).ToList();
-            string userListJson = db_userList.ToJson();
-            List<V_EmployeeToDingTalk> userList = userListJson.ToObject<List<V_EmployeeToDingTalk>>();
-            var roleList = userList.GroupBy(it => it.PositionName).ToList();
+            ////var query4 = list2s.Where(s => list1.All(t => !s.name.Contains(t))).ToList();
+            //string userListJson = db_userList.ToJson();
+            //List<V_EmployeeToDingTalk> userList = userListJson.ToObject<List<V_EmployeeToDingTalk>>();
+            //var roleList = userList.GroupBy(it => it.PositionName).ToList();
 
 
-            List<V_EmployeeToDingTalk> UpdateUserList = new List<V_EmployeeToDingTalk>();
-            List<V_EmployeeToDingTalk> AddUserList = new List<V_EmployeeToDingTalk>();
+            //List<V_EmployeeToDingTalk> UpdateUserList = new List<V_EmployeeToDingTalk>();
+            //List<V_EmployeeToDingTalk> AddUserList = new List<V_EmployeeToDingTalk>();
 
 
-            //钉钉加入到职务角色下的所有员工
-            var ddroleList = simpleDomainsList.GroupBy(it => it.RoleName).ToList();
+            ////钉钉加入到职务角色下的所有员工
+            //var ddroleList = simpleDomainsList.GroupBy(it => it.RoleName).ToList();
 
-            var res = ddroleList.Select(r =>
-            {
-                var dbusers = db_userList.Where(u => u.PositionName == r.Key).Select(ur => ur.UserId);
-                var ddUsers = r.SelectMany(ru => ru.List).Select(rl => rl.Userid);
-                return new
-                {
-                    RoleId = r.First().RoleId,
-                    RoleName = r.Key,
-                    InserUser = dbusers.Except(ddUsers),
-                    DeleteUser = ddUsers.Except(dbusers)
-                };
-            });
+            //var res = ddroleList.Select(r =>
+            //{
+            //    var dbusers = db_userList.Where(u => u.PositionName == r.Key).Select(ur => ur.UserId);
+            //    var ddUsers = r.SelectMany(ru => ru.List).Select(rl => rl.Userid);
+            //    return new
+            //    {
+            //        RoleId = r.First().RoleId,
+            //        RoleName = r.Key,
+            //        InserUser = dbusers.Except(ddUsers),
+            //        DeleteUser = ddUsers.Except(dbusers)
+            //    };
+            //});
 
 
-            string userStr = "";
-            int pageSize = 20;
-            foreach (var item in res)
-            {
-                var userListCount = item.InserUser.Count();
-                var updateListCount = item.DeleteUser.Count();
+            //string userStr = "";
+            //int pageSize = 20;
+            //foreach (var item in res)
+            //{
+            //    var userListCount = item.InserUser.Count();
+            //    var updateListCount = item.DeleteUser.Count();
 
-                if (userListCount > 0 || updateListCount > 0)
-                {
-                    if (userListCount > 0)
-                    {
-                        var uList = new List<string>();
-                        if (userListCount > pageSize)
-                        {
+            //    if (userListCount > 0 || updateListCount > 0)
+            //    {
+            //        if (userListCount > 0)
+            //        {
+            //            var uList = new List<string>();
+            //            if (userListCount > pageSize)
+            //            {
 
-                            int pageNum = ((userListCount / pageSize) + (userListCount % pageSize > 0 ? 1 : 0));
-                            for (int i = 0; i < pageNum; i++)
-                            {
-                                //Skip是起始数据,表示从第n+1条数据开始.（此处pageNum应从0开始）
-                                //pageNum：页数、=0是第一页,pageSize：一页多少条
-                                uList = item.InserUser.OrderBy(it => it).Skip(i * pageSize).Take(pageSize).Select(it => it).ToList();
-                                userStr = string.Join(",", uList.ToArray());
+            //                int pageNum = ((userListCount / pageSize) + (userListCount % pageSize > 0 ? 1 : 0));
+            //                for (int i = 0; i < pageNum; i++)
+            //                {
+            //                    //Skip是起始数据,表示从第n+1条数据开始.（此处pageNum应从0开始）
+            //                    //pageNum：页数、=0是第一页,pageSize：一页多少条
+            //                    uList = item.InserUser.OrderBy(it => it).Skip(i * pageSize).Take(pageSize).Select(it => it).ToList();
+            //                    userStr = string.Join(",", uList.ToArray());
 
-                                client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/addrolesforemps");
-                                OapiRoleAddrolesforempsRequest addUserRoleRequest = new OapiRoleAddrolesforempsRequest();
-                                addUserRoleRequest.RoleIds = item.RoleId.ToString();
-                                addUserRoleRequest.UserIds = userStr;
-                                OapiRoleAddrolesforempsResponse resp = client.Execute(addUserRoleRequest, response.AccessToken);
-                                if (resp.ErrCode != "0")
-                                {
-                                    Console.WriteLine("\n" + resp.ErrMsg + "\n");
-                                }
-                            }
+            //                    client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/addrolesforemps");
+            //                    OapiRoleAddrolesforempsRequest addUserRoleRequest = new OapiRoleAddrolesforempsRequest();
+            //                    addUserRoleRequest.RoleIds = item.RoleId.ToString();
+            //                    addUserRoleRequest.UserIds = userStr;
+            //                    OapiRoleAddrolesforempsResponse resp = client.Execute(addUserRoleRequest, response.AccessToken);
+            //                    if (resp.ErrCode != "0")
+            //                    {
+            //                        Console.WriteLine("\n" + resp.ErrMsg + "\n");
+            //                    }
+            //                }
 
-                        }
-                        else
-                        {
-                            uList = item.InserUser.OrderBy(it => it).Select(it => it).ToList();
-                            userStr = string.Join(",", uList.ToArray());
+            //            }
+            //            else
+            //            {
+            //                uList = item.InserUser.OrderBy(it => it).Select(it => it).ToList();
+            //                userStr = string.Join(",", uList.ToArray());
 
-                            client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/addrolesforemps");
-                            OapiRoleAddrolesforempsRequest addUserRoleRequest = new OapiRoleAddrolesforempsRequest();
-                            addUserRoleRequest.RoleIds = item.RoleId.ToString();
-                            addUserRoleRequest.UserIds = userStr;
-                            OapiRoleAddrolesforempsResponse resp = client.Execute(addUserRoleRequest, response.AccessToken);
-                            if (resp.ErrCode != "0")
-                            {
-                                Console.WriteLine("\n" + resp.ErrMsg + "\n");
-                            }
-                        }
-                    }
-                    if (updateListCount > 0)
-                    {
-                        ;
-                    }
-                }
-            }
+            //                client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/addrolesforemps");
+            //                OapiRoleAddrolesforempsRequest addUserRoleRequest = new OapiRoleAddrolesforempsRequest();
+            //                addUserRoleRequest.RoleIds = item.RoleId.ToString();
+            //                addUserRoleRequest.UserIds = userStr;
+            //                OapiRoleAddrolesforempsResponse resp = client.Execute(addUserRoleRequest, response.AccessToken);
+            //                if (resp.ErrCode != "0")
+            //                {
+            //                    Console.WriteLine("\n" + resp.ErrMsg + "\n");
+            //                }
+            //            }
+            //        }
+            //        if (updateListCount > 0)
+            //        {
+            //            ;
+            //        }
+            //    }
+            //}
 
 
 
