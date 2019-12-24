@@ -33,7 +33,7 @@ namespace WebApi
         {
             #region Configuration Injection
             services.AddOptions();
-            services.Configure<FreeSqlConfig>(Configuration.GetSection("SqlConfig:FreeSqlCollections"));
+            services.Configure<FreeSqlCollectionConfig>(Configuration.GetSection("SqlConfig"));
             services.Configure<MinioConfig>(Configuration.GetSection(nameof(MinioConfig)));
             services.Configure<ExceptionlessConfig>(Configuration.GetSection("Exceptionless"));
             #endregion
