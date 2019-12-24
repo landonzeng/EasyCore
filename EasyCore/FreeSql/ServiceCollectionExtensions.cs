@@ -24,14 +24,15 @@ namespace EasyCore.FreeSql
 
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            var freeSql = service.BuildServiceProvider().GetRequiredService<IOptions<FreeSqlConfig>>().Value;
+            var freeSql = service.BuildServiceProvider().GetRequiredService<IOptions<FreeSqlCollectionConfig>>().Value;
+            var config = freeSql.FreeSqlCollections.Where(it => it.DataTableName == "HRSystem").FirstOrDefault();
             //注入FreeSql
             service.AddScoped(f =>
             {
                 var log = f.GetRequiredService<ILogger<IFreeSql>>();
                 var freeBuilder = new FreeSqlBuilder()
                     .UseAutoSyncStructure(false)
-                    .UseConnectionString(freeSql.DataType, freeSql.MasterConnetion)
+                    .UseConnectionString(config.DataType, config.MasterConnetion)
                     .UseLazyLoading(true)
                     .UseMonitorCommand(aop =>
                     {
@@ -58,9 +59,9 @@ namespace EasyCore.FreeSql
                         //Console.WriteLine("=================================================================================\n");
                         //Console.ForegroundColor = (ConsoleColor)thisFontColor;
                     });
-                if (freeSql.SlaveConnections?.Count > 0)//判断是否存在从库
+                if (config.SlaveConnections?.Count > 0)//判断是否存在从库
                 {
-                    freeBuilder.UseSlave(freeSql.SlaveConnections.Select(x => x.ConnectionString).ToArray());
+                    freeBuilder.UseSlave(config.SlaveConnections.Select(x => x.ConnectionString).ToArray());
                 }
                 var freesql = freeBuilder.Build();
                 //我这里禁用了导航属性联级插入的功能
