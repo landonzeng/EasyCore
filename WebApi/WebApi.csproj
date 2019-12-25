@@ -7,14 +7,10 @@
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
   <ItemGroup>
-    <PackageReference Include="EasyCore" Version="1.0.2" />
+    <PackageReference Include="EasyCore" Version="1.0.4" />
     <PackageReference Include="Exceptionless.AspNetCore" Version="4.3.2027" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
     <PackageReference Include="TopSdk.Core" Version="2019.4.21.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\EasyCore\EasyCore.csproj" />
   </ItemGroup>
 
 </Project>
