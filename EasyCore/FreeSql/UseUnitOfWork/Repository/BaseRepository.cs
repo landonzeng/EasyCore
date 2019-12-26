@@ -57,7 +57,7 @@ namespace EasyCore.FreeSql.UseUnitOfWork.Repository
         public Task<int> UowInsertAsync<T>(IEnumerable<T> entitys) where T : class
         {
 
-            return Orm.Insert(entitys).WithTransaction(UnitOfWork.GetOrBeginTransaction()).ExecuteSqlBulkCopyAsync();
+            return Orm.Insert(entitys).WithTransaction(UnitOfWork.GetOrBeginTransaction()).ExecuteAffrowsAsync();
         }
         /// <summary>
         /// 插入 同步 集合
