@@ -11,11 +11,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace EasyCore.FreeSql
+namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddFreeSql(this IServiceCollection service)
+        public static void AddSimpleFreeSql(this IServiceCollection service)
         {
 
             var thisFontColor = (int)Console.ForegroundColor;
@@ -25,7 +25,7 @@ namespace EasyCore.FreeSql
             if (service == null) throw new ArgumentNullException(nameof(service));
 
             var freeSql = service.BuildServiceProvider().GetRequiredService<IOptions<FreeSqlCollectionConfig>>().Value;
-            var config = freeSql.FreeSqlCollections.Where(it => it.DataTableName == "HRSystem").FirstOrDefault();
+            var config = freeSql.FreeSqlCollections.Where(it => it.Key == "IHRSystem").FirstOrDefault();
             //注入FreeSql
             service.AddScoped(f =>
             {

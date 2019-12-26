@@ -13,4 +13,8 @@
     <PackageReference Include="TopSdk.Core" Version="2019.4.21.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EasyCore\EasyCore.csproj" />
+  </ItemGroup>
+
 </Project>

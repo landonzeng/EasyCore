@@ -1,21 +1,20 @@
+using System;
 using AutoMapper;
 using EasyCore.DependencyInjection;
+using EasyCore.ExceptionlessExtensions;
+using EasyCore.ExceptionlessExtensions.Config;
 using EasyCore.FreeSql;
 using EasyCore.FreeSql.Config;
+using EasyCore.FreeSql.SimpleUseFreeSql;
 using EasyCore.Minio;
 using EasyCore.Minio.Config;
+using Exceptionless;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using Exceptionless;
-using EasyCore.ExceptionlessExtensions.Config;
-using EasyCore.ExceptionlessExtensions;
-using System.Collections.Generic;
-using System.Linq;
-using FluentValidation.AspNetCore;
 
 namespace WebApi
 {
@@ -42,7 +41,7 @@ namespace WebApi
 
             services.AddMinio();
 
-            services.AddFreeSql();
+            services.AddSimpleFreeSql();
 
             services.AddExceptionless();
 

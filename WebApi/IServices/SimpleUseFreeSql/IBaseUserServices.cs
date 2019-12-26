@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Module;
 
-namespace WebApi.IServices
+namespace WebApi.IServices.SimpleUseFreeSql
 {
     public interface IBaseUserServices: IServiceKey
     {
