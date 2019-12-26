@@ -1,15 +1,12 @@
-﻿using EasyCore.FreeSql;
-using FreeSql;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using WebApi.IRepository;
-using WebApi.IServices;
+using EasyCore.FreeSql.SimpleUseFreeSql;
+using FreeSql;
+using WebApi.IServices.SimpleUseFreeSql;
 using WebApi.Module;
 
-namespace WebApi.Services
+namespace WebApi.Services.SimpleUseFreeSql
 {
     public class BaseUserServices : BaseService, IBaseUserServices
     {

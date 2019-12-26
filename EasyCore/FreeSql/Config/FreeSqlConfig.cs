@@ -17,12 +17,12 @@ namespace EasyCore.FreeSql.Config
     /// <summary>
     /// FreeSql配置类
     /// </summary>
-    public class FreeSqlConfig : IOptions<FreeSqlConfig>
+    public class FreeSqlConfig 
     {
         /// <summary>
         /// 数据库名称
         /// </summary>
-        public string DataTableName { get; set; }
+        public string Key { get; set; }
         /// <summary>
         /// 主库
         /// </summary>
@@ -30,7 +30,7 @@ namespace EasyCore.FreeSql.Config
         /// <summary>
         /// 从库链接
         /// </summary>
-        public List<SlaveConnection> SlaveConnections { get; set; }
+        public List<SlaveConnection> SlaveConnections { get; set; } = new List<SlaveConnection>();
         /// <summary>
         /// 数据库类型
         /// </summary>
@@ -38,12 +38,30 @@ namespace EasyCore.FreeSql.Config
         /// <summary>
         /// 
         /// </summary>
-        public bool IsSyncStructure { get; set; } = false;
+        public bool DebugShowSql { get; set; } = true;
         /// <summary>
         /// 
         /// </summary>
-        public FreeSqlConfig Value => this;
+        public bool IsSyncStructure { get; set; } = false;
     }
+
+    /// <summary>
+    /// SQL日志配置
+    /// </summary>
+    public class SqlLogs
+    {
+        public bool IsShowLog { get; set; }
+        public LogLevel ShowLevel { get; set; }
+    }
+
+    /// <summary>
+    /// 日志级别枚举
+    /// </summary>
+    public enum LogLevel
+    {
+        Debug, Info, Trace, Error, Warnging
+    }
+
     /// <summary>
     /// 从库链接
     /// </summary>

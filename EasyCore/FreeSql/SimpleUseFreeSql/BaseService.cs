@@ -6,7 +6,7 @@ using FreeSql;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace EasyCore.FreeSql
+namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
     public class BaseService : IServiceKey
     {

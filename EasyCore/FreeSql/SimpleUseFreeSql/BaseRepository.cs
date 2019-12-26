@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace EasyCore.FreeSql
+namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
     public class BaseRepository<T, TKey> : IBaseRepository<T>, IRepositoryKey where T : EntityBase<TKey>
     {
