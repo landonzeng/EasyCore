@@ -124,7 +124,7 @@ namespace WebApi.Module {
 		[JsonProperty, Column(DbType = "nvarchar(50)")]
 		public string ManagerPosn { get; set; } = string.Empty;
 
-		[JsonProperty, Column(DbType = "date")]
+		[JsonProperty, Column(DbType = "datetime")]
 		public DateTime? ModifyDate { get; set; }
 
 		/// <summary>

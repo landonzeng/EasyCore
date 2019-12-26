@@ -17,13 +17,6 @@ namespace WebApi.Services.SimpleUseFreeSql
             _iBaseUserRepository = UnitOfWork.GetRepository<LR_Base_User>();
         }
 
-        //private readonly ILogger _logger;
-        //public BaseUserServices(IServiceProvider service, ILogger logger) : base(service, logger)
-        //{
-        //    _iBaseUserRepository = UnitOfWork.GetRepository<LR_Base_User>();
-        //    _logger = logger;
-        //}
-
         public async Task<List<LR_Base_User>> GetList()
         {
             return await _iBaseUserRepository.Select.ToListAsync();

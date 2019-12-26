@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EasyCore.FreeSql
+namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
     public interface IServiceKey
     {
-        //ILogger Logger { get; }
         IRepositoryUnitOfWork UnitOfWork { get; }
     }
 }

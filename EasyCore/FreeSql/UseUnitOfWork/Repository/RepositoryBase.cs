@@ -4,28 +4,44 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using EasyCore.FreeSql.UseUnitOfWork.IRepository;
 using FreeSql;
 using Microsoft.Extensions.DependencyInjection;
 using Util.Domains;
 
 namespace EasyCore.FreeSql.UseUnitOfWork.Repository
 {
-    public abstract class BaseRepository<TEntity, Context, TKey> : UowCoreRepositoryBase<TEntity, Context>
-        where TEntity : class, IKey<TKey>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="Context"></typeparam>
+    public abstract class RepositoryBase<TEntity, Context> : UowCoreRepositoryBase<TEntity, Context>
+        where TEntity : class
     {
-        public BaseRepository(IServiceProvider service) : base(service)
+        public RepositoryBase(IServiceProvider service) : base(service)
         {
             base.UnitOfWork = service.GetRequiredService<IUnitOfWork<Context>>();
-            string companyId = string.Empty;
         }
     }
-    public abstract class UowCoreRepositoryBase<TEntity, Context> : BaseRepository<TEntity>, IRepository.IBaseRepository<TEntity, Context>
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="Context"></typeparam>
+    public abstract class UowCoreRepositoryBase<TEntity, Context> : BaseRepository<TEntity>, IRepositoryBase<TEntity, Context>
        where TEntity : class
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="service"></param>
         public UowCoreRepositoryBase(IServiceProvider service) : base(service.GetRequiredService<IFreeSql<Context>>(), null)
         {
             base.UnitOfWork = service.GetRequiredService<IUnitOfWork<Context>>();
         }
+
         #region Uow CUD操作拓展
 
         /// <summary>
@@ -153,7 +169,11 @@ namespace EasyCore.FreeSql.UseUnitOfWork.Repository
 
         #endregion
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
         public IEnumerable<TEntity> SelectDbOrMemory(Expression<Func<TEntity, bool>> condition = null)
         {
             IEnumerable<TEntity> res;

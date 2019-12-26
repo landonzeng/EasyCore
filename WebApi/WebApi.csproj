@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
   <ItemGroup>
     <PackageReference Include="EasyCore" Version="1.0.4" />
