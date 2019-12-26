@@ -8,7 +8,12 @@ using Util.Dependency;
 
 namespace EasyCore.FreeSql.UseUnitOfWork.IRepository
 {
-    public interface IBaseRepository<TEntity, TContext> : IBaseRepository<TEntity>, IScopeDependency
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TContext"></typeparam>
+    public interface IRepositoryBase<TEntity, TContext> : IBaseRepository<TEntity>, IScopeDependency
     where TEntity : class
     {
         #region Uow CUD操作拓展
@@ -101,6 +106,11 @@ namespace EasyCore.FreeSql.UseUnitOfWork.IRepository
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
         IEnumerable<TEntity> SelectDbOrMemory(Expression<Func<TEntity, bool>> condition = null);
     }
 }

@@ -8,6 +8,8 @@ using System.Text;
 using EasyCore.FreeSql.Config;
 using System.Linq;
 using EasyCore.FreeSql.UseUnitOfWork;
+using EasyCore.Utilities;
+using Microsoft.Extensions.Logging;
 
 namespace EasyCore.FreeSql.Datas
 {
@@ -20,29 +22,59 @@ namespace EasyCore.FreeSql.Datas
         /// <param name="service"></param>
         public static void AddFreeSql<T>(this IServiceCollection service)
         {
+            //var thisFontColor = (int)Console.ForegroundColor;
+            //var newFontColor = (ConsoleColor)((thisFontColor + 1) > 15 ? 0 : (thisFontColor + 1));
+
             service.AddSingleton(f =>
             {
-                var current = f.GetRequiredService<IOptions<FreeSqlCollectionConfig>>()
-               .Value.FreeSqlCollections.FirstOrDefault(x => x.Key == typeof(T).Name);
+                var log = f.GetRequiredService<ILogger<IFreeSql>>();
+                var current = f.GetRequiredService<IOptions<FreeSqlCollectionConfig>>().Value.FreeSqlCollections.FirstOrDefault(x => x.Key == typeof(T).Name);
                 var builder = new FreeSqlBuilder()
                     .UseConnectionString(current.DataType, current.MasterConnetion)
                     .UseAutoSyncStructure(current.IsSyncStructure)
                     .UseMonitorCommand(x =>
-                    {
-                    },
+                    { },
                     (executed, s) =>
                     {
                         if (current.DebugShowSql)
                         {
-                            Console.WriteLine(executed.CommandText);
+                            //Console.ForegroundColor = newFontColor;
+                            //Console.WriteLine("\n=================================================================================\n");
+                            //Console.WriteLine(executed.CommandText + "\n");
+
+                            string parametersValue = "";
+                            for (int i = 0; i < executed.Parameters.Count; i++)
+                            {
+                                parametersValue += $"{executed.Parameters[i].ParameterName}:{executed.Parameters[i].Value}" + ";\n";
+                            }
+                            if (!string.IsNullOrWhiteSpace(parametersValue))
+                            {
+                                //Console.WriteLine(parametersValue);
+                                log.LogDebug
+                                (
+                                    "\n=================================================================================\n\n"
+                                                                + executed.CommandText + "\n\n"
+                                                                + "\n" + parametersValue +
+                                    "\n=================================================================================\n\n"
+                                );
+                            }
+                            log.LogDebug
+                            (
+                                "\n=================================================================================\n\n"
+                                                                + executed.CommandText +
+                                "\n\n=================================================================================\n"
+                            );
+
+                            //Console.WriteLine("=================================================================================\n");
+                            //Console.ResetColor();
                         }
                     });
-                if (current.SlaveConnections.Count > 0)
+                if (current.SlaveConnections.Count > 0)//判断是否存在从库
                 {
                     builder.UseSlave(current.SlaveConnections.Select(x => x.ConnectionString).ToArray());
                 }
                 var res = builder.Build<T>();
-                
+
                 #region //使用FreeSql AOP做对应的业务拓展，有需要自行实现
                 //res.GlobalFilter.Apply<IDeleted>(SysConsts.IsDeletedDataFilter, x => !x.IsDeleted);
                 //res.GlobalFilter.Apply<IEnabled>(SysConsts.IsEnabledDataFilter, x => x.Enabled == true);

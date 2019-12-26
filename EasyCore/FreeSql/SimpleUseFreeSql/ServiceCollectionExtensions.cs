@@ -1,15 +1,10 @@
-﻿using EasyCore.FreeSql.Config;
+﻿using System;
+using System.Linq;
+using EasyCore.FreeSql.Config;
 using FreeSql;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
@@ -26,6 +21,9 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
 
             var freeSql = service.BuildServiceProvider().GetRequiredService<IOptions<FreeSqlCollectionConfig>>().Value;
             var config = freeSql.FreeSqlCollections.Where(it => it.Key == "IHRSystem").FirstOrDefault();
+
+            if (config == null) throw new ArgumentNullException(nameof(config));
+
             //注入FreeSql
             service.AddScoped(f =>
             {
@@ -49,13 +47,22 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
                         {
                             //Console.WriteLine(parametersValue);
 
-                            log.LogInformation("\n=================================================================================\n\n" + aop.CommandText + "\n\n");
-                            log.LogInformation("\n" + parametersValue + "\n=================================================================================\n\n");
+                            log.LogInformation
+                            (
+                                "\n=================================================================================\n\n" 
+                                                            + aop.CommandText + "\n\n"
+                                                            + parametersValue + 
+                                "\n=================================================================================\n\n"
+                            );
                         }
 
-                        log.LogInformation("\n=================================================================================\n\n" 
-                                                                            + aop.CommandText + 
-                                            "\n\n=================================================================================\n");
+                        log.LogInformation
+                        (
+                            "\n=================================================================================\n\n"
+                                                                            + aop.CommandText +
+                            "\n\n=================================================================================\n"
+                        );
+
                         //Console.WriteLine("=================================================================================\n");
                         //Console.ForegroundColor = (ConsoleColor)thisFontColor;
                     });
@@ -71,11 +78,6 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
 
             //注入Uow
             service.AddScoped(f => f.GetRequiredService<IFreeSql>().CreateUnitOfWork());
-
-            //注入HttpContextAccessor 可以从IOC中拿到HttpContext的内容
-            service.AddHttpContextAccessor();
-
-            service.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
     }
 }

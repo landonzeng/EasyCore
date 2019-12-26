@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EasyCore.FreeSql
+namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
     /// <summary>
     /// 为了和FreeSql的仓储接口区分新增了这个接口

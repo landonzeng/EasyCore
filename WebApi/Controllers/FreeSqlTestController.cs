@@ -12,57 +12,58 @@ using WebApi.Module;
 using EasyCore.Utilities;
 using static DingTalk.Api.Response.OapiRoleSimplelistResponse;
 using FreeSql;
+using WebApi.IServices.SimpleUseFreeSql;
+using EasyCore.ExceptionlessExtensions;
 
 namespace WebApi.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class FreeSqlTestController : ControllerBase
     {
-        private readonly IRepositoryUnitOfWork _uow;
-        private readonly ILogger<WeatherForecastController> _logger;
+        //private readonly IRepositoryUnitOfWork _uow;
+        //private readonly ILoggerHelper _logger;
+        //public FreeSqlTestController(ILoggerHelper logger, IBaseUserServices baseUserServices)
+        //{
+        //    _logger = logger;
+        //    _uow = baseUserServices.UnitOfWork;
+        //}
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IBaseUserServices baseUserServices)
+        private readonly ILoggerHelper _logger;
+        private readonly IDepartmentInfoService _departmentInfoService;        
+
+        public FreeSqlTestController(ILoggerHelper logger, IDepartmentInfoService departmentInfoService)
         {
             _logger = logger;
-            _uow = baseUserServices.UnitOfWork;
+            _departmentInfoService = departmentInfoService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            #region //
             //var data= await _baseUserServices.GetList();
             //var data = await _baseUserServices.UnitOfWork.GetRepository<LR_Base_Company>().Select.ToListAsync();
             //return Ok(data);
 
-            LR_Test model = new LR_Test();
+            //LR_Test model = new LR_Test();
 
+            ////await _uow.GetGuidRepository<LR_Test>().InsertAsync(model);
 
-            //model.CompanyId = Guid.NewGuid();
-            //model.F_EnCode = "111";
-            //model.F_TestId = "111";
+            //model = await _uow.GetGuidRepository<LR_Test>().Where(it => it.Id == 1).FirstAsync();
+            //string F_EnCode = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");            
 
+            //var sql = await _uow.GetRepository<LR_Test>().UpdateDiy.SetRaw("F_Encode=@F_Encode,F_TestId=@F_TestId", new { F_Encode = F_EnCode, F_TestId = "2313123123" }).Where(it => it.Id == 1).ExecuteUpdatedAsync();
 
-            //await _uow.GetGuidRepository<LR_Test>().InsertAsync(model);
-            
-            model = await _uow.GetGuidRepository<LR_Test>().Where(it => it.Id == 1).FirstAsync();
-            string F_EnCode = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");            
-            
-            var sql = await _uow.GetRepository<LR_Test>().UpdateDiy.SetRaw("F_Encode=@F_Encode,F_TestId=@F_TestId", new { F_Encode = F_EnCode, F_TestId = "2313123123" }).Where(it => it.Id == 1).ExecuteUpdatedAsync();
+            ////var insert = _uow.GetRepository<LR_Test>().UpdateDiy.SetSource(model).Where(it=>it.F_EnCode=="111");
 
-
-            //var insert = _uow.GetRepository<LR_Test>().UpdateDiy.SetSource(model).Where(it=>it.F_EnCode=="111");
-
-            _uow.Commit();
-
-
+            //_uow.Commit();
 
 
             #region 获取公司所有角色
             //var db_userList = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).ToListAsync();
             //var db_role = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).GroupBy(it => it.PositionName).ToListAsync(a => a.Key);
             #endregion
-
 
             #region 获取钉钉Token
             //IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/gettoken");
@@ -137,7 +138,6 @@ namespace WebApi.Controllers
             //}
             #endregion
 
-
             //var dd_roles = dd_roleList.Roles?.Select(it => it.Name).ToList();
             //var strlist = dd_roles;
             //if (dd_roles != null)
@@ -184,7 +184,6 @@ namespace WebApi.Controllers
             //        DeleteUser = ddUsers.Except(dbusers)
             //    };
             //});
-
 
             //string userStr = "";
             //int pageSize = 20;
@@ -243,11 +242,7 @@ namespace WebApi.Controllers
             //        }
             //    }
             //}
-
-
-
-
-
+            
             //foreach (var item in ddroleList)
             //{
             //    var i = item.FirstOrDefault();
@@ -260,9 +255,6 @@ namespace WebApi.Controllers
             //        userList = userList.Where(it => !UpdateUserList.Select(u => u.UserId).Contains(it.UserId)).ToList();
             //    }
             //}
-
-
-
 
             #endregion
 
@@ -315,9 +307,7 @@ namespace WebApi.Controllers
             //        OapiRoleAddrolesforempsResponse resp = client.Execute(addUserRoleRequest, response.AccessToken);
             //    }
             //}
-
-
-
+            
             #region 根据角色ID删除角色
             //client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/deleterole");
             //OapiRoleDeleteroleRequest request_del = new OapiRoleDeleteroleRequest();
@@ -325,38 +315,50 @@ namespace WebApi.Controllers
 
             //OapiRoleDeleteroleResponse res = client.Execute(request_del, response.AccessToken);
             #endregion
+            #endregion
 
-            return Ok("成功！");
+            //var list=await _departmentInfoService.FindListAsync();
+
+            //var delete = await _departmentInfoService.DeleteAsync(16800);
+
+            //_logger.Debug(nameof(FreeSqlTestController),"进入到FreeSql测试","testTags");
+
+            Tbiz_DepartmentInfo log = await _departmentInfoService.GetAsync(75110);
+            log.ModifyDate = DateTime.Now;
+            log.Enabled = "A";
+            var update = await _departmentInfoService.UpdateAsync(log);
+
+            return Ok(log);
         }
 
-        private static List<EmpSimpleDomain> GetSimplelistResponse(List<EmpSimpleDomain> simpleList, IDingTalkClient client, OapiGettokenResponse response, OapiRoleListResponse.OpenRoleDomain item, long Offset = 0, long Size = 200)
-        {
-            OapiRoleSimplelistRequest reqSimplelist = new OapiRoleSimplelistRequest();
-            reqSimplelist.RoleId = item.Id;
-            reqSimplelist.Offset = Offset;
-            reqSimplelist.Size = Size;
+        //private static List<EmpSimpleDomain> GetSimplelistResponse(List<EmpSimpleDomain> simpleList, IDingTalkClient client, OapiGettokenResponse response, OapiRoleListResponse.OpenRoleDomain item, long Offset = 0, long Size = 200)
+        //{
+        //    OapiRoleSimplelistRequest reqSimplelist = new OapiRoleSimplelistRequest();
+        //    reqSimplelist.RoleId = item.Id;
+        //    reqSimplelist.Offset = Offset;
+        //    reqSimplelist.Size = Size;
 
-            OapiRoleSimplelistResponse respSimplelist = client.Execute(reqSimplelist, response.AccessToken);
-            if (respSimplelist.Result.List != null && respSimplelist.Result.List.Count > 0)
-            {
-                EmpSimpleDomain emp = new EmpSimpleDomain() { List = respSimplelist.Result.List, RoleId = item.Id, RoleName = item.Name };
+        //    OapiRoleSimplelistResponse respSimplelist = client.Execute(reqSimplelist, response.AccessToken);
+        //    if (respSimplelist.Result.List != null && respSimplelist.Result.List.Count > 0)
+        //    {
+        //        EmpSimpleDomain emp = new EmpSimpleDomain() { List = respSimplelist.Result.List, RoleId = item.Id, RoleName = item.Name };
 
-                simpleList.Add(emp);
-            }
+        //        simpleList.Add(emp);
+        //    }
 
-            if (respSimplelist.Result.HasMore == true)
-            {
+        //    if (respSimplelist.Result.HasMore == true)
+        //    {
 
-                simpleList.AddRange(GetSimplelistResponse(simpleList, client, response, item, respSimplelist.Result.NextCursor));
-            }
+        //        simpleList.AddRange(GetSimplelistResponse(simpleList, client, response, item, respSimplelist.Result.NextCursor));
+        //    }
 
-            return simpleList;
-        }
+        //    return simpleList;
+        //}
 
-        public class EmpSimpleDomain : PageVoDomain
-        {
-            public string RoleName { get; set; }
-            public long RoleId { get; set; }
-        }
+        //public class EmpSimpleDomain : PageVoDomain
+        //{
+        //    public string RoleName { get; set; }
+        //    public long RoleId { get; set; }
+        //}
     }
 }
