@@ -1,23 +1,23 @@
 using System;
 using AutoMapper;
-using EasyCore.DependencyInjection;
+using EasyCore.EventBus.Abstractions;
+using EasyCore.EventBus.Extensions;
+using EasyCore.EventBus.RabbitMQ.Extensions;
 using EasyCore.ExceptionlessExtensions;
 using EasyCore.ExceptionlessExtensions.Config;
 using EasyCore.FreeSql.Config;
 using EasyCore.FreeSql.Datas;
-using EasyCore.FreeSql.SimpleUseFreeSql;
 using EasyCore.Minio;
 using EasyCore.Minio.Config;
 using Exceptionless;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using WebApi.DbContext;
+using WebApi.Module;
 
 namespace WebApi
 {
@@ -59,6 +59,11 @@ namespace WebApi
 
             services.AddControllers();
 
+            services.AddEventBus(option => { option.UseRabbitMQ(); });
+            //订阅注册
+            RegisterEventBus(services);
+
+
             services.AddMvc(options =>
             {
                 options.Filters.Add<GlobalExceptionFilter>();
@@ -90,7 +95,32 @@ namespace WebApi
             });
 
             app.UseExceptionless(Configuration);
+
+            //配置EventBus任务
+            ConfigureEventBus(app);
         }
+
+        #region 其他方法
+        /// <summary>
+        /// 注册订阅事件驱动
+        /// </summary>
+        /// <param name="services"></param>
+        private void RegisterEventBus(IServiceCollection services)
+        {
+            services.AddScoped<CustomerSignEventHandler>();
+        }
+
+        /// <summary>
+        /// 配置EventBus任务
+        /// </summary>
+        /// <param name="app"></param>
+        private void ConfigureEventBus(IApplicationBuilder app)
+        {
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+            eventBus.Subscribe<CustomerSignEvent, CustomerSignEventHandler>();
+            eventBus.StartSubscribe();
+        }
+        #endregion
 
     }
 }
