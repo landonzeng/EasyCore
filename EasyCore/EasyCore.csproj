@@ -5,7 +5,7 @@
 		<Description>搭建 netcore 基础框架类库，集成Minio、FreeSql、Exceptionless以及基础工具 用于快速开发</Description>
 		<AssemblyVersion>0.1.0.0</AssemblyVersion>
 		<FileVersion>0.1.0.0</FileVersion>
-		<Version>1.0.7</Version>
+		<Version>1.0.8</Version>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/landonzeng/EasyCore</PackageProjectUrl>
 	</PropertyGroup>
@@ -36,9 +36,9 @@
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
 		<PackageReference Include="Exceptionless" Version="4.3.2027" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
-		<PackageReference Include="FreeSql.Provider.SqlServer" Version="1.0.0" />
+		<PackageReference Include="FreeSql.Provider.SqlServer" Version="1.0.1" />
 		<PackageReference Include="AutoMapper" Version="9.0.0" />
-		<PackageReference Include="FreeSql.Repository" Version="1.0.0" />
+		<PackageReference Include="FreeSql.Repository" Version="1.0.1" />
 		<PackageReference Include="log4net" Version="2.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
