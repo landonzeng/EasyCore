@@ -32,9 +32,7 @@ namespace EasyCore.FreeSql.Datas
                 var builder = new FreeSqlBuilder()
                     .UseConnectionString(current.DataType, current.MasterConnetion)
                     .UseAutoSyncStructure(current.IsSyncStructure)
-                    .UseMonitorCommand(x =>
-                    { },
-                    (executed, s) =>
+                    .UseMonitorCommand(executing =>
                     {
                         if (current.DebugShowSql)
                         {
@@ -43,9 +41,9 @@ namespace EasyCore.FreeSql.Datas
                             //Console.WriteLine(executed.CommandText + "\n");
 
                             string parametersValue = "";
-                            for (int i = 0; i < executed.Parameters.Count; i++)
+                            for (int i = 0; i < executing.Parameters.Count; i++)
                             {
-                                parametersValue += $"{executed.Parameters[i].ParameterName}:{executed.Parameters[i].Value}" + ";\n";
+                                parametersValue += $"{executing.Parameters[i].ParameterName}:{executing.Parameters[i].Value}" + ";\n";
                             }
                             if (!string.IsNullOrWhiteSpace(parametersValue))
                             {
@@ -53,7 +51,7 @@ namespace EasyCore.FreeSql.Datas
                                 log.LogDebug
                                 (
                                     "\n=================================================================================\n\n"
-                                                                + executed.CommandText + "\n\n"
+                                                                + executing.CommandText + "\n\n"
                                                                 + "\n" + parametersValue +
                                     "\n=================================================================================\n\n"
                                 );
@@ -63,7 +61,7 @@ namespace EasyCore.FreeSql.Datas
                                 log.LogDebug
                                 (
                                     "\n=================================================================================\n\n"
-                                                                    + executed.CommandText +
+                                                                    + executing.CommandText +
                                     "\n\n=================================================================================\n"
                                 );
                             }
@@ -78,6 +76,7 @@ namespace EasyCore.FreeSql.Datas
                 var res = builder.Build<T>();
 
                 #region //使用FreeSql AOP做对应的业务拓展，有需要自行实现
+
                 //res.GlobalFilter.Apply<IDeleted>(SysConsts.IsDeletedDataFilter, x => !x.IsDeleted);
                 //res.GlobalFilter.Apply<IEnabled>(SysConsts.IsEnabledDataFilter, x => x.Enabled == true);
                 //res.Aop.ConfigEntity += new EventHandler<ConfigEntityEventArgs>((_, e) =>
@@ -89,7 +88,8 @@ namespace EasyCore.FreeSql.Datas
                 //        e.ModifyIndexResult.Add(new FreeSql.DataAnnotations.IndexAttribute(temp.Name, temp.Fields, temp.IsUnique));
                 //    }
                 //});
-                #endregion
+
+                #endregion //使用FreeSql AOP做对应的业务拓展，有需要自行实现
 
                 return res;
             });
