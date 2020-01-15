@@ -34,6 +34,8 @@ namespace EasyCore.FreeSql.Datas
                     .UseAutoSyncStructure(current.IsSyncStructure)
                     .UseMonitorCommand(executing =>
                     {
+                        executing.CommandTimeout = current.CommandTimeout;
+
                         if (current.DebugShowSql)
                         {
                             //Console.ForegroundColor = newFontColor;
@@ -41,20 +43,23 @@ namespace EasyCore.FreeSql.Datas
                             //Console.WriteLine(executed.CommandText + "\n");
 
                             string parametersValue = "";
-                            for (int i = 0; i < executing.Parameters.Count; i++)
+                            if (current.DebugShowSqlPparameters)
                             {
-                                parametersValue += $"{executing.Parameters[i].ParameterName}:{executing.Parameters[i].Value}" + ";\n";
+                                for (int i = 0; i < executing.Parameters.Count; i++)
+                                {
+                                    parametersValue += $"{executing.Parameters[i].ParameterName}:{executing.Parameters[i].Value}" + ";\n";
+                                }
                             }
                             if (!string.IsNullOrWhiteSpace(parametersValue))
                             {
                                 //Console.WriteLine(parametersValue);
                                 log.LogDebug
-                                (
-                                    "\n=================================================================================\n\n"
-                                                                + executing.CommandText + "\n\n"
-                                                                + "\n" + parametersValue +
-                                    "\n=================================================================================\n\n"
-                                );
+                             (
+                                 "\n=================================================================================\n\n"
+                                                             + executing.CommandText + "\n\n"
+                                                             + "\n" + parametersValue +
+                                 "\n=================================================================================\n\n"
+                             );
                             }
                             else
                             {
