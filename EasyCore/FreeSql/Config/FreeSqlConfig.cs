@@ -17,32 +17,47 @@ namespace EasyCore.FreeSql.Config
     /// <summary>
     /// FreeSql配置类
     /// </summary>
-    public class FreeSqlConfig 
+    public class FreeSqlConfig
     {
         /// <summary>
         /// 数据库名称
         /// </summary>
         public string Key { get; set; }
+
         /// <summary>
         /// 主库
         /// </summary>
         public string MasterConnetion { get; set; }
+
         /// <summary>
         /// 从库链接
         /// </summary>
         public List<SlaveConnection> SlaveConnections { get; set; } = new List<SlaveConnection>();
+
         /// <summary>
         /// 数据库类型
         /// </summary>
         public DataType DataType { get; set; }
+
         /// <summary>
-        /// 
+        /// 显示sql语句
         /// </summary>
         public bool DebugShowSql { get; set; } = true;
+
         /// <summary>
-        /// 
+        /// 显示sql语句中传递参数
+        /// </summary>
+        public bool DebugShowSqlPparameters { get; set; } = false;
+
+        /// <summary>
+        ///是否同步结构
         /// </summary>
         public bool IsSyncStructure { get; set; } = false;
+
+        /// <summary>
+        /// Command超时时间(秒)
+        /// </summary>
+        public int CommandTimeout { get; set; } = 30;
     }
 
     /// <summary>
@@ -69,5 +84,4 @@ namespace EasyCore.FreeSql.Config
     {
         public string ConnectionString { get; set; }
     }
-
 }
