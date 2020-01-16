@@ -396,7 +396,7 @@ namespace EasyCore.NPOIExtensions
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Write(ms);
-                buffer = ms.GetBuffer();
+                buffer = ms.ToArray();
                 ms.Close();
             }
 
