@@ -296,7 +296,6 @@ namespace EasyCore.NPOIExtensions
                             if (row.GetCell(item) != null) //同理，没有数据的单元格都默认是null
                                 dataRow[column] = row.GetCell(item).ToString();
                             column++;
-
                         }
                         data.Rows.Add(dataRow);
                     }
@@ -348,7 +347,6 @@ namespace EasyCore.NPOIExtensions
             }
             return buffer;
         }
-
     }
 
     /// <summary>
@@ -365,7 +363,7 @@ namespace EasyCore.NPOIExtensions
             IRow rows = null;
             Type entityType = entitys[0].GetType();
 
-            PropertyInfo[] entityProperties = entityType.GetProperties().Where(x => !x.GetCustomAttribute<ColumnAttribute>()?.IsIgnore ?? true).ToArray();
+            PropertyInfo[] entityProperties = entityType.GetProperties().Where(x => (!x.GetCustomAttribute<ColumnAttribute>()?.IsIgnore ?? true) && (!x.GetCustomAttribute<NpoiIgnoreAttribute>()?.IsIgnore ?? true)).ToArray();
 
             for (int i = 0; i <= entitys.Count; i++)
             {
@@ -404,6 +402,5 @@ namespace EasyCore.NPOIExtensions
 
             return buffer;
         }
-
     }
 }

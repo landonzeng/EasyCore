@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EasyCore.NPOIExtensions.Attributes
+namespace EasyCore.NPOIExtensions
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class NpoiIgnoreAttribute : Attribute
     {
-        internal bool? _NpoiIsIgnore;
+        internal bool? _IsIgnore;
 
         /// <summary>
         /// 忽略此列，不导入、不导出
         /// </summary>
-        public bool NpoiIsIgnore { get => _NpoiIsIgnore ?? false; set => _NpoiIsIgnore = value; }
+        public bool IsIgnore { get => _IsIgnore ?? false; set => _IsIgnore = value; }
     }
 }
