@@ -15,6 +15,7 @@ namespace WebApi.Controllers
     public class ExceptionlessController : ControllerBase
     {
         public ILoggerHelper Logger { get; }
+
         public ExceptionlessController(ILoggerHelper logger)
         {
             Logger = logger;
@@ -24,38 +25,46 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            Logger.Debug("message!", "tag1", "tag2", "tag3");
+            //Logger.Debug("message!", "tag1", "tag2", "tag3");
+
+            var a = new Test();
+            a.test = "aaa";
+            var dd = Convert.ToInt32(a.test);
 
             return Ok();
             //throw new Exception("Test test ts Get测试");
+        }
+
+        public class Test
+        {
+            public string test { get; set; }
         }
 
         // GET: api/Exceptionless/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                throw new Exception($"测试抛出的异常{id}");
-            }
-            catch (Exception ex)
-            {
-                ex.ToExceptionless().Submit();
-            }
-            return Ok("Unknown Error!");
-
+            //try
+            //{
+            throw new Exception($"测试抛出的异常{id}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    ex.ToExceptionless().Submit();
+            //}
+            //return Ok("Unknown Error!");
         }
 
         // POST: api/Exceptionless
-        [HttpPost]
-        public void Post()
+        [HttpPost("{id}")]
+        public void Post([FromBody] PutModel putModel)
         {
             throw new Exception("Test test ts Post测试");
         }
 
         // PUT: api/Exceptionless/5
         [HttpPut("{id}")]
-        public void Put(int id)
+        public void Put([FromBody] PutModel putModel)
         {
             throw new Exception("Test test ts Put测试");
         }
@@ -66,5 +75,21 @@ namespace WebApi.Controllers
         {
             throw new Exception("Test test ts Delete测试");
         }
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    public class PutModel
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        public string u_id { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public string user { get; set; }
     }
 }

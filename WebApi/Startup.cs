@@ -9,6 +9,7 @@ using EasyCore.FreeSql.Config;
 using EasyCore.FreeSql.Datas;
 using EasyCore.Minio;
 using EasyCore.Minio.Config;
+using EasyCore.Quartz.Extensions;
 using Exceptionless;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -34,11 +35,13 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             #region Configuration Injection
+
             services.AddOptions();
             services.Configure<FreeSqlCollectionConfig>(Configuration.GetSection("SqlConfig"));
             services.Configure<MinioConfig>(Configuration.GetSection(nameof(MinioConfig)));
             services.Configure<ExceptionlessConfig>(Configuration.GetSection("Exceptionless"));
-            #endregion
+
+            #endregion Configuration Injection
 
             //services.AddLogging();
 
@@ -48,6 +51,8 @@ namespace WebApi
 
             services.AddFreeSql<IHRSystem>();
             services.AddFreeSql<IPMWebApi>();
+
+            //services.AddQuartz();
 
             services.AddExceptionless();
 
@@ -59,10 +64,9 @@ namespace WebApi
 
             services.AddControllers();
 
-            services.AddEventBus(option => { option.UseRabbitMQ(); });
+            //services.AddEventBus(option => { option.UseRabbitMQ(); });
             //订阅注册
-            RegisterEventBus(services);
-
+            //RegisterEventBus(services);
 
             services.AddMvc(options =>
             {
@@ -97,10 +101,11 @@ namespace WebApi
             app.UseExceptionless(Configuration);
 
             //配置EventBus任务
-            ConfigureEventBus(app);
+            //ConfigureEventBus(app);
         }
 
         #region 其他方法
+
         /// <summary>
         /// 注册订阅事件驱动
         /// </summary>
@@ -120,7 +125,7 @@ namespace WebApi
             eventBus.Subscribe<CustomerSignEvent, CustomerSignEventHandler>();
             eventBus.StartSubscribe();
         }
-        #endregion
 
+        #endregion 其他方法
     }
 }

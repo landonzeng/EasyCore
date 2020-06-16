@@ -54,6 +54,7 @@ namespace EasyCore.EventBus.RabbitMQ
         }
 
         #region 推送
+
         /// <summary>
         /// 推送
         /// </summary>
@@ -89,7 +90,6 @@ namespace EasyCore.EventBus.RabbitMQ
                 //          2，"首次"，如果一个连接已经声明了一个排他队列，其他连接是不允许建立同名的排他队列的，这个与普通队列不同。
                 //          3，即使该队列是持久化的，一旦连接关闭或者客户端退出，该排他队列都会被自动删除的。这种队列适用于只限于一个客户端发送读取消息的应用场景。
 
-
                 //交换机持久化
                 channel.ExchangeDeclare(exchange: _exchangeName, type: _type, durable: true);
 
@@ -106,9 +106,11 @@ namespace EasyCore.EventBus.RabbitMQ
                 });
             }
         }
-        #endregion
+
+        #endregion 推送
 
         #region 订阅注册
+
         /// <summary>
         /// 订阅注册
         /// </summary>
@@ -175,9 +177,11 @@ namespace EasyCore.EventBus.RabbitMQ
 
             return channel;
         }
-        #endregion
+
+        #endregion 订阅注册
 
         #region 取消订阅
+
         /// <summary>
         /// 取消订阅
         /// </summary>
@@ -189,9 +193,11 @@ namespace EasyCore.EventBus.RabbitMQ
         {
             _subsManager.RemoveSubscription<T, TH>();
         }
-        #endregion
+
+        #endregion 取消订阅
 
         #region 释放
+
         /// <summary>
         /// 释放
         /// </summary>
@@ -206,9 +212,11 @@ namespace EasyCore.EventBus.RabbitMQ
             }
             _subsManager.Clear();
         }
-        #endregion
+
+        #endregion 释放
 
         #region RabbitMQ取消订阅
+
         /// <summary>
         /// RabbitMQ取消订阅
         /// </summary>
@@ -231,9 +239,11 @@ namespace EasyCore.EventBus.RabbitMQ
                 }
             }
         }
-        #endregion
+
+        #endregion RabbitMQ取消订阅
 
         #region 订阅启动
+
         /// <summary>
         /// 订阅启动
         /// </summary>
@@ -251,7 +261,7 @@ namespace EasyCore.EventBus.RabbitMQ
                 consumer.Received += async (model, ea) =>
                 {
                     var eventName = ea.RoutingKey;
-                    var message = Encoding.UTF8.GetString(ea.Body);
+                    var message = Encoding.UTF8.GetString(ea.Body.ToArray());
                     if (message.Length > 0)
                     {
                         var result = await ProcessEvent(eventName, message);
@@ -295,7 +305,15 @@ namespace EasyCore.EventBus.RabbitMQ
                             if (eventType == null) continue;
                             var handler = scope.ServiceProvider.GetRequiredService(subscription.HandlerType);
                             if (handler == null) continue;
-                            var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+                            var integrationEvent = new object();
+                            try
+                            {
+                                integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
                             var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 
                             await Task.Yield();
@@ -306,7 +324,8 @@ namespace EasyCore.EventBus.RabbitMQ
             }
             return true;
         }
-        #endregion
+
+        #endregion 订阅启动
 
         /// <summary>
         /// 动态内容订阅
