@@ -30,7 +30,7 @@ namespace WebApi.Controllers
         //}
 
         private readonly ILoggerHelper _logger;
-        private readonly IDepartmentInfoService _departmentInfoService;        
+        private readonly IDepartmentInfoService _departmentInfoService;
 
         public FreeSqlTestController(ILoggerHelper logger, IDepartmentInfoService departmentInfoService)
         {
@@ -42,6 +42,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Get()
         {
             #region //
+
             //var data= await _baseUserServices.GetList();
             //var data = await _baseUserServices.UnitOfWork.GetRepository<LR_Base_Company>().Select.ToListAsync();
             //return Ok(data);
@@ -51,7 +52,7 @@ namespace WebApi.Controllers
             ////await _uow.GetGuidRepository<LR_Test>().InsertAsync(model);
 
             //model = await _uow.GetGuidRepository<LR_Test>().Where(it => it.Id == 1).FirstAsync();
-            //string F_EnCode = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");            
+            //string F_EnCode = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
             //var sql = await _uow.GetRepository<LR_Test>().UpdateDiy.SetRaw("F_Encode=@F_Encode,F_TestId=@F_TestId", new { F_Encode = F_EnCode, F_TestId = "2313123123" }).Where(it => it.Id == 1).ExecuteUpdatedAsync();
 
@@ -59,34 +60,40 @@ namespace WebApi.Controllers
 
             //_uow.Commit();
 
-
             #region 获取公司所有角色
+
             //var db_userList = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).ToListAsync();
             //var db_role = await _baseUserServices.UnitOfWork.GetGuidRepository<V_EmployeeToDingTalk>().Select.Where(it => it.Enabled == 1).GroupBy(it => it.PositionName).ToListAsync(a => a.Key);
-            #endregion
+
+            #endregion 获取公司所有角色
 
             #region 获取钉钉Token
+
             //IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/gettoken");
             //OapiGettokenRequest request = new OapiGettokenRequest();
             //request.Appkey = "dingzaylvubm9xhoeijk";
             //request.Appsecret = "eJaM-HBxG74ABJhnIYPNMVXNLZQqHSxkgKshtcHFO1pBybjpmbTZwqitgDnPtncu";
             //request.SetHttpMethod("GET");
             //OapiGettokenResponse response = client.Execute(request);
-            #endregion
+
+            #endregion 获取钉钉Token
 
             #region 获取角色列表
+
             //client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/list");
             //var requestRole = new OapiRoleListRequest();
             //requestRole.Offset = 0L;
             //requestRole.Size = 200L;
 
             //OapiRoleListResponse responseRoleList = client.Execute(requestRole, response.AccessToken);
-            #endregion
+
+            #endregion 获取角色列表
 
             //List<OapiRoleAddroleResponse> result = new List<OapiRoleAddroleResponse>();
             //var dd_roleList = responseRoleList.Result.List.Where(it => it.Name == "职位").FirstOrDefault();
 
             #region 获取职位角色下所有角色列表，然后删除其中的所有员工
+
             //foreach (var item in dd_roleList.Roles)
             //{
             //    client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/deleterole");
@@ -136,7 +143,8 @@ namespace WebApi.Controllers
             //        #endregion
             //    }
             //}
-            #endregion
+
+            #endregion 获取职位角色下所有角色列表，然后删除其中的所有员工
 
             //var dd_roles = dd_roleList.Roles?.Select(it => it.Name).ToList();
             //var strlist = dd_roles;
@@ -146,6 +154,7 @@ namespace WebApi.Controllers
             //}
 
             #region 获取角色下的所有用户
+
             //client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/simplelist");
             //List<EmpSimpleDomain> simpleDomainsList = new List<EmpSimpleDomain>();
             //if (dd_roleList.Roles != null)
@@ -155,19 +164,19 @@ namespace WebApi.Controllers
             //        GetSimplelistResponse(simpleDomainsList, client, response, item);
             //    }
             //}
-            #endregion
+
+            #endregion 获取角色下的所有用户
 
             #region 过滤掉加入到钉钉的用户
+
             // 不包含
             ////var query4 = list2s.Where(s => list1.All(t => !s.name.Contains(t))).ToList();
             //string userListJson = db_userList.ToJson();
             //List<V_EmployeeToDingTalk> userList = userListJson.ToObject<List<V_EmployeeToDingTalk>>();
             //var roleList = userList.GroupBy(it => it.PositionName).ToList();
 
-
             //List<V_EmployeeToDingTalk> UpdateUserList = new List<V_EmployeeToDingTalk>();
             //List<V_EmployeeToDingTalk> AddUserList = new List<V_EmployeeToDingTalk>();
-
 
             ////钉钉加入到职务角色下的所有员工
             //var ddroleList = simpleDomainsList.GroupBy(it => it.RoleName).ToList();
@@ -199,7 +208,6 @@ namespace WebApi.Controllers
             //            var uList = new List<string>();
             //            if (userListCount > pageSize)
             //            {
-
             //                int pageNum = ((userListCount / pageSize) + (userListCount % pageSize > 0 ? 1 : 0));
             //                for (int i = 0; i < pageNum; i++)
             //                {
@@ -242,11 +250,10 @@ namespace WebApi.Controllers
             //        }
             //    }
             //}
-            
+
             //foreach (var item in ddroleList)
             //{
             //    var i = item.FirstOrDefault();
-
 
             //    foreach (var value in i.List)
             //    {
@@ -256,9 +263,10 @@ namespace WebApi.Controllers
             //    }
             //}
 
-            #endregion
+            #endregion 过滤掉加入到钉钉的用户
 
             #region 在职位角色组下创建角色
+
             //foreach (var item in strlist)
             //{
             //    client = new DefaultDingTalkClient("https://oapi.dingtalk.com/role/add_role");
@@ -268,7 +276,8 @@ namespace WebApi.Controllers
             //    OapiRoleAddroleResponse rsp = client.Execute(req, response.AccessToken);
             //    result.Add(rsp);
             //}
-            #endregion
+
+            #endregion 在职位角色组下创建角色
 
             //string userStr = "";
             //int pageSize = 100;
@@ -278,7 +287,6 @@ namespace WebApi.Controllers
             //    var userList = new List<string>();
             //    if (userListCount > pageSize)
             //    {
-
             //        int pageNum = ((userListCount / pageSize) + (userListCount % pageSize > 0 ? 1 : 0));
             //        for (int i = 0; i < pageNum; i++)
             //        {
@@ -307,15 +315,18 @@ namespace WebApi.Controllers
             //        OapiRoleAddrolesforempsResponse resp = client.Execute(addUserRoleRequest, response.AccessToken);
             //    }
             //}
-            
+
             #region 根据角色ID删除角色
+
             //client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/role/deleterole");
             //OapiRoleDeleteroleRequest request_del = new OapiRoleDeleteroleRequest();
             //request_del.RoleId = postId.Roles[0].Id;
 
             //OapiRoleDeleteroleResponse res = client.Execute(request_del, response.AccessToken);
-            #endregion
-            #endregion
+
+            #endregion 根据角色ID删除角色
+
+            #endregion //
 
             //var list=await _departmentInfoService.FindListAsync();
 
@@ -348,7 +359,6 @@ namespace WebApi.Controllers
 
         //    if (respSimplelist.Result.HasMore == true)
         //    {
-
         //        simpleList.AddRange(GetSimplelistResponse(simpleList, client, response, item, respSimplelist.Result.NextCursor));
         //    }
 

@@ -10,7 +10,7 @@ namespace WebApi.Services.SimpleUseFreeSql
 {
     public class BaseUserServices : BaseService, IBaseUserServices
     {
-        private readonly BaseRepository<LR_Base_User> _iBaseUserRepository;
+        private readonly IBaseRepository<LR_Base_User> _iBaseUserRepository;
 
         public BaseUserServices(IServiceProvider service) : base(service)
         {

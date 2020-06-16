@@ -5,7 +5,7 @@
 		<Description>搭建 netcore 基础框架类库，集成Minio、FreeSql、Exceptionless以及基础工具 用于快速开发</Description>
 		<AssemblyVersion>0.1.0.0</AssemblyVersion>
 		<FileVersion>0.1.0.0</FileVersion>
-		<Version>1.0.14</Version>
+		<Version>1.2.16</Version>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/landonzeng/EasyCore</PackageProjectUrl>
 	</PropertyGroup>
@@ -31,29 +31,30 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Autofac" Version="4.9.4" />
+		<PackageReference Include="Autofac" Version="5.2.0" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
-		<PackageReference Include="Exceptionless" Version="4.3.2027" />
-		<PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
-		<PackageReference Include="FreeSql.Provider.SqlServer" Version="1.0.1" />
+		<PackageReference Include="Exceptionless.AspNetCore" Version="4.4.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
+		<PackageReference Include="FreeSql.Provider.SqlServer" Version="1.5.0" />
 		<PackageReference Include="AutoMapper" Version="9.0.0" />
-		<PackageReference Include="FreeSql.Repository" Version="1.0.1" />
+		<PackageReference Include="FreeSql.Repository" Version="1.5.0" />
 		<PackageReference Include="log4net" Version="2.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.1" />
-		<PackageReference Include="Minio" Version="3.1.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.5" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.5" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.5" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.5" />
+		<PackageReference Include="Minio" Version="3.1.13" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Scrutor" Version="3.1.0" />
-		<PackageReference Include="Util.Logs" Version="3.0.0-preview-20191013.0" />
-		<PackageReference Include="Polly" Version="7.2.0" />
-		<PackageReference Include="RabbitMQ.Client" Version="6.0.0-rc1" />
+		<PackageReference Include="Quartz" Version="3.0.7" />
+		<PackageReference Include="Scrutor" Version="3.2.1" />
+		<PackageReference Include="Util.Logs" Version="3.0.0.3" />
+		<PackageReference Include="Polly" Version="7.2.1" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

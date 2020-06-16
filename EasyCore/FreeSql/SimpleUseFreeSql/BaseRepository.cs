@@ -11,7 +11,8 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
 {
     public class BaseRepository<T, TKey> : IBaseRepository<T>, IRepositoryKey where T : EntityBase<TKey>
     {
-        private BaseRepository<T> _baseRep;
+        private IBaseRepository<T> _baseRep;
+
         public BaseRepository(IServiceProvider service)
         {
             _baseRep = service.GetRequiredService<IFreeSql>().GetRepository<T>();
@@ -32,13 +33,15 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
 
         public DbContextOptions DbContextOptions { get => _baseRep.DbContextOptions; set => _baseRep.DbContextOptions = value; }
 
+        public void AsTable(Func<string, string> rule) => _baseRep.AsTable(rule);
+
         public void AsType(Type entityType) => _baseRep.AsType(entityType);
 
         public void Attach(T entity) => _baseRep.Attach(entity);
 
         public void Attach(IEnumerable<T> entity) => _baseRep.Attach(entity);
 
-        public IBasicRepository<T> AttachOnlyPrimary(T data) => _baseRep.AttachOnlyPrimary(data);
+        public IBaseRepository<T> AttachOnlyPrimary(T data) => _baseRep.AttachOnlyPrimary(data);
 
         public int Delete(Expression<Func<T, bool>> predicate) => _baseRep.Delete(predicate);
 
