@@ -71,8 +71,8 @@ namespace WebApi.Controllers
 
             //IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/gettoken");
             //OapiGettokenRequest request = new OapiGettokenRequest();
-            //request.Appkey = "dingzaylvubm9xhoeijk";
-            //request.Appsecret = "eJaM-HBxG74ABJhnIYPNMVXNLZQqHSxkgKshtcHFO1pBybjpmbTZwqitgDnPtncu";
+            //request.Appkey = "1111111111";
+            //request.Appsecret = "222222222222222";
             //request.SetHttpMethod("GET");
             //OapiGettokenResponse response = client.Execute(request);
 
