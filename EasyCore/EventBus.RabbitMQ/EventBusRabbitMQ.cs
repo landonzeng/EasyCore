@@ -269,6 +269,9 @@ namespace EasyCore.EventBus.RabbitMQ
                         {
                             _consumerChannel.BasicAck(ea.DeliveryTag, multiple: false);
                         }
+                        else {
+                            _consumerChannel.BasicAck(ea.DeliveryTag, multiple: true);
+                        }
                     }
                 };
 

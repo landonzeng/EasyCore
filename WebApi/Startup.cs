@@ -98,6 +98,9 @@ namespace WebApi
                 endpoints.MapControllers();
             });
 
+            //ºöÂÔ404
+            ExceptionlessClient.Default.SubmittingEvent += GlobalExceptionless.OnSubmittingEvent;
+
             app.UseExceptionless(Configuration);
 
             //ÅäÖÃEventBusÈÎÎñ
