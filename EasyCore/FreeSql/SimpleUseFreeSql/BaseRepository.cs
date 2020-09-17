@@ -43,6 +43,8 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
 
         public IBaseRepository<T> AttachOnlyPrimary(T data) => _baseRep.AttachOnlyPrimary(data);
 
+        public void BeginEdit(List<T> data) => _baseRep.BeginEdit(data);
+
         public int Delete(Expression<Func<T, bool>> predicate) => _baseRep.Delete(predicate);
 
         public int Delete(T entity)
@@ -73,6 +75,11 @@ namespace EasyCore.FreeSql.SimpleUseFreeSql
         public void Dispose()
         {
             _baseRep.Dispose();
+        }
+
+        public int EndEdit(List<T> data = null)
+        {
+            throw new NotImplementedException();
         }
 
         public void FlushState()
