@@ -20,7 +20,7 @@
     "WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/MinioTest",
+      "launchUrl": "api/EventBus",
       "applicationUrl": "https://localhost:7001;http://localhost:7000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

@@ -18,20 +18,80 @@ namespace WebApi.Controllers
     {
         private const int MB = 1024 * 1024;
         private readonly IMinioRepository _minio;
+
         public MinioTestController(IMinioRepository minio)
         {
             _minio = minio;
         }
 
-        // GET: api/Value
-        [HttpGet]
+        [HttpGet("api/base64")]
         public async Task<IActionResult> Get()
+        {
+            string base64String = "";
+            try
+            {
+                string bucketName = "hrms-images";
+                string saveName = "gongyi.png";
+
+                await _minio.StatObjectAsync(bucketName, saveName);
+
+                await _minio.GetObjectAsync(bucketName, saveName,
+                    (stream) =>
+                    {
+                        var memoryStream = new MemoryStream();
+                        stream.CopyTo(memoryStream);
+                        byte[] result = memoryStream.ToArray();
+                        base64String = Convert.ToBase64String(result);
+                    });
+
+                Console.WriteLine($"Get BucketName Images Base64:\n {base64String} ");
+                Console.WriteLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[Bucket]  Exception: {e}");
+                return NotFound(e.Message);
+            }
+
+            return Ok("data:image/jpeg;base64," + base64String);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> download()
         {
             try
             {
                 string bucketName = "hrms-images";
-                string saveName = "概率论基础和随机过程.pdf";
-                string fileName = @"G:\360MoveData\Users\landon\Desktop\概率论基础和随机过程.pdf";
+                string saveName = "gongyi.png";
+
+                var memoryStream = new MemoryStream();
+
+                await _minio.StatObjectAsync(bucketName, saveName);
+
+                await _minio.GetObjectAsync(bucketName, saveName,
+                    (stream) =>
+                    {
+                        stream.CopyTo(memoryStream);
+                    });
+
+                return File(memoryStream.ToArray(), System.Net.Mime.MediaTypeNames.Image.Jpeg, "gongyi.png");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[Bucket]  Exception: {e}");
+                return NotFound(e.Message);
+            }
+        }
+
+        // PUT: api/Value
+        [HttpPost]
+        public async Task<IActionResult> Post()
+        {
+            try
+            {
+                string bucketName = "hrms-images";
+                string saveName = "gongyi.png";
+                string fileName = @"G:\360MoveData\Users\landon\Desktop\gongyi.png";
 
                 byte[] bs = System.IO.File.ReadAllBytes(fileName);
                 using (MemoryStream filestream = new MemoryStream(bs))
@@ -47,10 +107,9 @@ namespace WebApi.Controllers
 
                     var metaData = new Dictionary<string, string>
                     {
-                        //{ "Content-Type", "image/jpeg" }
-                        { "Content-Type", "application/pdf" }
+                        { "Content-Type", "image/jpeg" }
+                        //{ "Content-Type", "application/pdf" }
                     };
-
 
                     await _minio.PutObjectAsync(bucketName, saveName, filestream, filestream.Length, "application/octet-stream", metaData);
                 }
@@ -67,6 +126,5 @@ namespace WebApi.Controllers
 
             return Ok(res);
         }
-
     }
 }

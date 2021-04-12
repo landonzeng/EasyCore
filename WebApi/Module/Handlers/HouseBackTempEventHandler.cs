@@ -9,26 +9,26 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApi.Module
 {
-    public class CustomerSignEventHandler : IIntegrationEventHandler<CustomerSignEvent>
+    public class HouseBackTempEventHandler : IIntegrationEventHandler<OperationHouseBackInfoEvent>
     {
-        private readonly ILogger<CustomerSignEventHandler> _logger;
-        public CustomerSignEventHandler(ILogger<CustomerSignEventHandler> logger)
+        private readonly ILogger<HouseBackTempEventHandler> _logger;
+
+        public HouseBackTempEventHandler(ILogger<HouseBackTempEventHandler> logger)
         {
             _logger = logger;
         }
 
-        public Task<bool> Handle(CustomerSignEvent @event)
+        public Task<bool> Handle(OperationHouseBackInfoEvent @event)
         {
             try
             {
                 //throw new Exception("tetst");
-                Console.WriteLine("\n日志消费:" + @event.ToJson()+"\n\n");
+                Console.WriteLine("\n日志消费:" + @event.ToJson() + "\n\n");
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine("日志消费:" + ex.Message);
-               return Task.FromResult(false);
+                return Task.FromResult(false);
             }
             return Task.FromResult(true);
         }
