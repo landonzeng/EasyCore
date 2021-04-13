@@ -340,8 +340,8 @@ ASALocalRun/
 healthchecksdb
 
 #Config Ignore
-appsettings.json
-appsettings.*.json
+WebApi/appsettings.json
+WebApi/appsettings.*.json
 
 #Controllers Ignore
-Controllers/EventBusController.cs
+WebApi/Controllers/EventBusController.cs
