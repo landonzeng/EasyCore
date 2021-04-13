@@ -48,7 +48,7 @@ namespace WebApi.Controllers
 
             var cus = json.ToObject<HouseBackupInfo>();
 
-            //_eventBus.Publish(new OperationHouseBackInfoEvent(cus));
+            _eventBus.Publish(new OperationHouseBackInfoEvent(cus));
         }
 
         // GET: api/EventBus
