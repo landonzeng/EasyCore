@@ -107,9 +107,81 @@ namespace EasyCore.EventBus.RabbitMQ
             }
         }
 
+        /// <summary>
+        /// 推送
+        /// </summary>
+        /// <param name="event"></param>
+        public void Publish(string exchanges, string queues, IntegrationEvent @event)
+        {
+            if (!_persistentConnection.IsConnected)
+            {
+                _persistentConnection.TryConnect();
+            }
+
+            var policy = RetryPolicy.Handle<BrokerUnreachableException>()
+                .Or<SocketException>()
+                .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
+                {
+                    // 防止logging走事件
+                    // _logger.LogWarning(ex, "Could not publish event: {EventId} after {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message);
+                    Console.WriteLine($"Could not publish event: {@event.Id} after {time.TotalSeconds:n1}s ({ex.Message})");
+                });
+
+            var eventName = @event.GetType().Name;
+            var message = JsonConvert.SerializeObject(@event);
+            var body = Encoding.UTF8.GetBytes(message);
+
+            using (var channel = _persistentConnection.CreateModel())
+            {
+                //durable：持久化存储队列
+
+                //autoDelete：自动删除，如果该队列没有任何订阅的消费者的话，该队列会被自动删除。这种队列适用于临时队列。
+
+                //exclusive：排他队列，如果一个队列被声明为排他队列，该队列仅对首次声明它的连接可见，并在连接断开时自动删除。
+                //注意事项：1，排他队列是基于连接可见的，同一连接的不同信道是可以同时访问同一个连接创建的排他队列的。
+                //          2，"首次"，如果一个连接已经声明了一个排他队列，其他连接是不允许建立同名的排他队列的，这个与普通队列不同。
+                //          3，即使该队列是持久化的，一旦连接关闭或者客户端退出，该排他队列都会被自动删除的。这种队列适用于只限于一个客户端发送读取消息的应用场景。
+
+                //交换机持久化
+                channel.ExchangeDeclare(exchange: exchanges, type: _type, durable: true);
+
+                //队列持久化
+                channel.QueueDeclare(queue: queues, durable: true, exclusive: false, autoDelete: false, null);
+                channel.QueueBind(queue: queues, exchange: exchanges, routingKey: eventName, arguments: null);
+
+                policy.Execute(() =>
+                {
+                    var properties = channel.CreateBasicProperties();
+                    properties.DeliveryMode = 2; //消息的投递模式，默认为1 非持久化的，2 持久化存储消息内容
+
+                    channel.BasicPublish(exchange: exchanges, routingKey: eventName, mandatory: true, basicProperties: properties, body: body);
+                });
+            }
+        }
+
         #endregion 推送
 
         #region 订阅注册
+
+        /// <summary>
+        /// 订阅注册
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="Texchange"></typeparam>
+        /// <typeparam name="TRoutingKey"></typeparam>
+        /// <typeparam name="TQueue"></typeparam>
+        public void Subscribe<T, TH, Texchange, TRoutingKey, TQueue>()
+            where T : IntegrationEvent
+            where TH : IIntegrationEventHandler<T>
+        {
+            var eventName = _subsManager.GetEventKey<T>();
+            var queueName = GetQueueName<TH>();
+
+            DoInternalSubscription(eventName, queueName);
+
+            _subsManager.AddSubscription<T, TH>();
+        }
 
         /// <summary>
         /// 订阅注册
@@ -269,7 +341,8 @@ namespace EasyCore.EventBus.RabbitMQ
                         {
                             _consumerChannel.BasicAck(ea.DeliveryTag, multiple: false);
                         }
-                        else {
+                        else
+                        {
                             _consumerChannel.BasicAck(ea.DeliveryTag, multiple: true);
                         }
                     }
@@ -311,6 +384,9 @@ namespace EasyCore.EventBus.RabbitMQ
                             var integrationEvent = new object();
                             try
                             {
+                                //var jsonObj = JsonConvert.DeserializeObject(message);
+                                //var json = jsonObj.ToString();
+
                                 integrationEvent = JsonConvert.DeserializeObject(message, eventType);
                             }
                             catch (Exception ex)

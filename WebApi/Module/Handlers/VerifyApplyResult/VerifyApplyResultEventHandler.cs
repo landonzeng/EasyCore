@@ -9,16 +9,16 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApi.Module
 {
-    public class HouseBackTempEventHandler : IIntegrationEventHandler<OperationHouseBackInfoEvent>
+    public class VerifyApplyResultEventHandler : IIntegrationEventHandler<OperationVerifyApplyResultEvent>
     {
-        private readonly ILogger<HouseBackTempEventHandler> _logger;
+        private readonly ILogger<VerifyApplyResultEventHandler> _logger;
 
-        public HouseBackTempEventHandler(ILogger<HouseBackTempEventHandler> logger)
+        public VerifyApplyResultEventHandler(ILogger<VerifyApplyResultEventHandler> logger)
         {
             _logger = logger;
         }
 
-        public Task<bool> Handle(OperationHouseBackInfoEvent @event)
+        public Task<bool> Handle(OperationVerifyApplyResultEvent @event)
         {
             try
             {

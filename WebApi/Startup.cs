@@ -115,7 +115,7 @@ namespace WebApi
         /// <param name="services"></param>
         private void RegisterEventBus(IServiceCollection services)
         {
-            //services.AddScoped<HouseBackTempEventHandler>();
+            services.AddScoped<HouseBackTempEventHandler>();
         }
 
         /// <summary>
@@ -124,9 +124,9 @@ namespace WebApi
         /// <param name="app"></param>
         private void ConfigureEventBus(IApplicationBuilder app)
         {
-            //var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-            //eventBus.Subscribe<OperationHouseBackInfoEvent, HouseBackTempEventHandler>();
-            //eventBus.StartSubscribe();
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+            eventBus.Subscribe<OperationHouseBackInfoEvent, HouseBackTempEventHandler>();
+            eventBus.StartSubscribe();
         }
 
         #endregion 其他方法

@@ -11,6 +11,14 @@ namespace EasyCore.EventBus.Abstractions
         void Publish(IntegrationEvent @event);
 
         /// <summary>
+        /// 推送消息
+        /// </summary>
+        /// <param name="exchanges"></param>
+        /// <param name="queues"></param>
+        /// <param name="event"></param>
+        void Publish(string exchanges, string queues, IntegrationEvent @event);
+
+        /// <summary>
         /// 消息订阅
         /// </summary>
         /// <typeparam name="T"></typeparam>
