@@ -338,3 +338,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+#Config Ignore
+appsettings.json
+appsettings.*.json
+
+#Controllers Ignore
+Controllers/EventBusController.cs
