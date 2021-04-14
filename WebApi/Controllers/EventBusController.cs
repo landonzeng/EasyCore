@@ -51,7 +51,9 @@ namespace WebApi.Controllers
             _eventBus.Publish(new OperationHouseBackInfoEvent(cus));
         }
 
-        //
+        /// <summary>
+        ///
+        /// </summary>
         [HttpGet("pubsh")]
         public void pubsh()
         {

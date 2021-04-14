@@ -38,8 +38,8 @@ namespace EasyCore.ExceptionlessExtensions
             //_loggerHelper.Error(filterContext.Exception.TargetSite.GetType().FullName, filterContext.Exception.ToString(), MpcKeys.GlobalExceptionCommonTags, filterContext.Exception.GetType().FullName);
             //_loggerHelper.Error(filterContext.Exception.TargetSite.GetType().FullName, filterContext.Exception.ToString(), "global_exception_common_tags", filterContext.Exception.GetType().FullName);
 
-            ////获取表单参数
-
+            //添加默认用户信息
+            ExceptionlessClient.Default.Configuration.SetUserIdentity("UserName");
             filterContext.Exception.ToExceptionless().SetMessage(filterContext.Exception.Message).Submit();
 
             //_loggerHelper.Error(source: filterContext.HttpContext.Request.Path+ " || " + filterContext.HttpContext.Request.Method, filterContext.Exception.ToString(), "global_exception_common_tags", filterContext.Exception.GetType().FullName);
