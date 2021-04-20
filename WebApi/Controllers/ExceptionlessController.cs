@@ -27,9 +27,9 @@ namespace WebApi.Controllers
         {
             //Logger.Debug("message!", "tag1", "tag2", "tag3");
 
-            var a = new Test();
-            a.test = "aaa";
-            var dd = Convert.ToInt32(a.test);
+            //var a = new Test();
+            //a.test = "aaa";
+            //var dd = Convert.ToInt32(a.test);
 
             return Ok();
             //throw new Exception("Test test ts Get测试");

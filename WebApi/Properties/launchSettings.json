@@ -20,7 +20,7 @@
     "WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/EventBus",
+      "launchUrl": "api/Exceptionless",
       "applicationUrl": "https://localhost:7001;http://localhost:7000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
