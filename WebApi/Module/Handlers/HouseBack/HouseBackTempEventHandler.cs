@@ -55,14 +55,8 @@ namespace WebApi.Module
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                //var json = "{\"AreaName\":\"测试小区\",\"CertificateNumber\":\"132565475654333\",\"CommissionStartDate\":\"2021-04-19\",\"HouseId\":\"237598322\",\"MobilePhone\":\"13898765432\",\"SalePrice\":0,\"Sex\":0,\"Trustor\":\"测试\",\"areaName\":\"测试小区\",\"certificateNumber\":\"132565475654333\",\"commissionStartDate\":\"2021-04-19\",\"houseId\":\"237598322\",\"mobilePhone\":\"13898765432\",\"salePrice\":0,\"sex\":0,\"trustor\":\"测试\"}";
 
-                var backupInfo = new HouseBackupInfo();
-                var ecStr = DESHelper.Encrypt(json, "cbs_5i5j_2021");
-                backupInfo.Data = ecStr;
-
-                var res = new OperationHouseBackInfoEvent(backupInfo);
-                var re_json = res.ToJson();
+                var re_json = @event.ToJson();
                 _eventBus.Publish("ex.vplues.housebackup.dev", nameof(OperationHouseBackInfoEvent), "qu.vplues.housebackup.gims.dev", re_json);
             }
 
