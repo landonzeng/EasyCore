@@ -49,8 +49,18 @@ namespace EasyCore.EventBus.Abstractions
         /// 动态订阅
         /// </summary>
         /// <typeparam name="TH"></typeparam>
-        /// <param name="eventName"></param>
-        void SubscribeDynamic<TH>(string eventName)
+        /// <param name="routingKey"></param>
+        void SubscribeDynamic<TH>(string routingKey)
+            where TH : IDynamicIntegrationEventHandler;
+
+        /// <summary>
+        /// 动态订阅
+        /// </summary>
+        /// <typeparam name="TH"></typeparam>
+        /// <param name="routingKey"></param>
+        /// <param name="exchangeName"></param>
+        /// <param name="queueName"></param>
+        void SubscribeDynamic<TH>(string routingKey, string exchangeName, string queueName)
             where TH : IDynamicIntegrationEventHandler;
 
         /// <summary>

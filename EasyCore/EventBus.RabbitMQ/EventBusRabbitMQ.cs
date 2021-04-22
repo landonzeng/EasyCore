@@ -247,9 +247,9 @@ namespace EasyCore.EventBus.RabbitMQ
             _subsManager.AddSubscription<T, TH>();
         }
 
-        private void DoInternalSubscription(string eventName, string queueName)
+        private void DoInternalSubscription(string routingKey, string queueName)
         {
-            var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
+            var containsKey = _subsManager.HasSubscriptionsForEvent(routingKey);
             if (!containsKey)
             {
                 if (!_persistentConnection.IsConnected)
@@ -264,7 +264,29 @@ namespace EasyCore.EventBus.RabbitMQ
 
                 using (var channel = _persistentConnection.CreateModel())
                 {
-                    channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: eventName, arguments: null);
+                    channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: routingKey, arguments: null);
+                }
+            }
+        }
+
+        private void DoInternalSubscription(string routingKey, string exchangeName, string queueName)
+        {
+            var containsKey = _subsManager.HasSubscriptionsForEvent(routingKey);
+            if (!containsKey)
+            {
+                if (!_persistentConnection.IsConnected)
+                {
+                    _persistentConnection.TryConnect();
+                }
+
+                if (!_consumerChannels.ContainsKey(queueName))
+                {
+                    _consumerChannels.Add(queueName, CreateConsumerChannel(queueName));
+                }
+
+                using (var channel = _persistentConnection.CreateModel())
+                {
+                    channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey, arguments: null);
                 }
             }
         }
@@ -419,8 +441,9 @@ namespace EasyCore.EventBus.RabbitMQ
                             if (!(scope.ServiceProvider.GetRequiredService(subscription.HandlerType) is IDynamicIntegrationEventHandler handler)) continue;
 
                             await Task.Yield();
-                            await handler.Handle(message);
-                            return true;
+                            //await handler.Handle(message);
+                            //return true;
+                            return await handler.Handle(message);
                         }
                         else
                         {
@@ -457,15 +480,24 @@ namespace EasyCore.EventBus.RabbitMQ
         /// 动态内容订阅
         /// </summary>
         /// <typeparam name="TH"></typeparam>
-        /// <param name="eventName"></param>
-        public void SubscribeDynamic<TH>(string eventName)
+        /// <param name="routingKey"></param>
+        public void SubscribeDynamic<TH>(string routingKey)
             where TH : IDynamicIntegrationEventHandler
         {
             var queueName = GetQueueName<TH>();
+            var exchangeName = GetExchangeName<TH>();
 
-            DoInternalSubscription(eventName, queueName);
+            DoInternalSubscription(routingKey: routingKey, exchangeName: exchangeName, queueName: queueName);
 
-            _subsManager.AddDynamicSubscription<TH>(eventName);
+            _subsManager.AddDynamicSubscription<TH>(routingKey);
+        }
+
+        public void SubscribeDynamic<TH>(string routingKey, string exchangeName, string queueName)
+            where TH : IDynamicIntegrationEventHandler
+        {
+            DoInternalSubscription(routingKey: routingKey, exchangeName: exchangeName, queueName: queueName);
+
+            _subsManager.AddDynamicSubscription<TH>(routingKey);
         }
 
         /// <summary>
@@ -493,6 +525,22 @@ namespace EasyCore.EventBus.RabbitMQ
                 queueName = queueConsumerAttr.QueueName;
             }
             return queueName;
+        }
+
+        /// <summary>
+        /// 获取ExchangeName
+        /// </summary>
+        /// <typeparam name="TH"></typeparam>
+        /// <returns></returns>
+        private string GetExchangeName<TH>()
+        {
+            var exchangeName = _exchangeName;
+            var exchangeConsumerAttr = typeof(TH).GetCustomAttribute<ExchangeConsumerAttribute>();
+            if (exchangeConsumerAttr != null)
+            {
+                exchangeName = exchangeConsumerAttr.ExchangeName;
+            }
+            return exchangeName;
         }
     }
 }

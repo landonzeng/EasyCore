@@ -4,6 +4,6 @@ namespace EasyCore.EventBus.Abstractions
 {
     public interface IDynamicIntegrationEventHandler
     {
-        Task Handle(string eventData);
+        Task<bool> Handle(string eventData);
     }
 }
